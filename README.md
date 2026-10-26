@@ -47,7 +47,7 @@ In the repo, go to **Settings**, then **Secrets and variables**, then **Actions*
 
 ## Email
 
-**You don't need to set anything up.** For each alert, the watcher opens an *issue* in your repo and tags you, and GitHub emails it to the address on your GitHub account. The issues also serve as a log of every change.
+**You don't need to set anything up.** For each alert, the watcher opens an *issue* in your repo that tags you, which makes GitHub email it to the address on your GitHub account. It then closes the issue right away, so nothing piles up. Old alerts are kept under **Issues**, then **Closed**.
 If no email arrives, go to https://github.com/settings/notifications and make sure **Email** is ticked under *Participating, @mentions and custom*. You can also choose which address GitHub sends to there.
 
 **Optional: send the email from Gmail instead.** Add these repository secrets:
