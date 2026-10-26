@@ -111,13 +111,18 @@ def http_get(url, retries=3):
     raise RuntimeError(f"Could not fetch {url}: {last_err}")
 
 
-def http_post_json(url, payload, headers=None):
+def http_post_json(url, payload, headers=None, method="POST"):
+    """Send JSON and return the JSON answer ({} if there is none)."""
     data = json.dumps(payload).encode("utf-8")
     h = {"Content-Type": "application/json", "User-Agent": "QCinemaWatcher/1.0"}
     h.update(headers or {})
-    req = urllib.request.Request(url, data=data, headers=h, method="POST")
+    req = urllib.request.Request(url, data=data, headers=h, method=method)
     with urllib.request.urlopen(req, timeout=30) as resp:
-        return resp.status
+        answer = resp.read().decode("utf-8", errors="replace")
+    try:
+        return json.loads(answer) if answer.strip() else {}
+    except ValueError:
+        return {}
 
 
 class _TextExtractor(HTMLParser):
@@ -354,11 +359,12 @@ def notify(title, body, url=None):
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     repo = os.environ.get("GITHUB_REPOSITORY", "").strip()
     if token and repo and os.environ.get("ISSUE_ALERTS", "true").lower() != "false":
+        # The @mention makes GitHub email you. The issue is closed right away
+        # so the repo doesn't fill up; old alerts stay under Issues > Closed.
         owner = os.environ.get("GITHUB_REPOSITORY_OWNER", repo.split("/")[0])
         issue = {
             "title": shorten(title, 250),
             "body": f"@{owner}\n\n{body}\n\n{url or ''}",
-            "assignees": [owner],
         }
         headers = {
             "Authorization": f"Bearer {token}",
@@ -366,12 +372,19 @@ def notify(title, body, url=None):
         }
         api = f"https://api.github.com/repos/{repo}/issues"
         try:
-            try:
-                http_post_json(api, issue, headers)
-            except urllib.error.HTTPError:
-                issue.pop("assignees")
-                http_post_json(api, issue, headers)
+            created = http_post_json(api, issue, headers)
             sent.append("GitHub issue (emails you)")
+            number = created.get("number")
+            if number:
+                try:
+                    http_post_json(
+                        f"{api}/{number}",
+                        {"state": "closed", "state_reason": "completed"},
+                        headers,
+                        method="PATCH",
+                    )
+                except Exception as e:  # noqa: BLE001
+                    log(f"  ! couldn't close issue #{number}: {e}")
         except Exception as e:  # noqa: BLE001
             log(f"  ! GitHub issue alert failed: {e}")
 
