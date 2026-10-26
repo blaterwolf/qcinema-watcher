@@ -2,8 +2,8 @@ name: QCinema watcher
 
 on:
   schedule:
-    # Every 10 minutes (GitHub sometimes runs these a few minutes late).
-    - cron: "*/10 * * * *"
+    # Every 5 minutes, the fastest GitHub allows (runs can start a few minutes late).
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       test_alert:
