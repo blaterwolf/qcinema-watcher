@@ -72,7 +72,7 @@ WATCH = [
 WATCH_NEW_PAGES = True
 
 STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
-FAIL_ALERT_AFTER = 6  # consecutive failed runs before warning you (6 x 10 min = 1 hour)
+FAIL_ALERT_AFTER = 12  # consecutive failed runs before warning you (12 x 5 min = 1 hour)
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/130.0 Safari/537.36"
