@@ -1,6 +1,6 @@
 # QCinema Watcher
 
-Checks these pages every 10 minutes and alerts you on **Discord** and by **email** when they change:
+Checks these pages every 5 minutes and alerts you on **Discord** and by **email** when they change:
 
 - https://qcinema.ph/schedule/
 - https://qcinema.ph/festival-badge/
@@ -41,7 +41,7 @@ In the repo, go to **Settings**, then **Secrets and variables**, then **Actions*
 1. Open the **Actions** tab. If GitHub asks, click **I understand my workflows, go ahead and enable them**.
 2. Click **QCinema watcher** on the left, then **Run workflow**. Tick **Only send a test alert**, then click **Run workflow**.
 3. Within about a minute you should get a test message in Discord and an email from GitHub.
-4. Click **Run workflow** again, this time **without** the tick. You'll get a "QCinema Watcher is now running" message, and you're done. From now on it checks every 10 minutes by itself.
+4. Click **Run workflow** again, this time **without** the tick. You'll get a "QCinema Watcher is now running" message, and you're done. From now on it checks every 5 minutes by itself.
 
 ---
 
@@ -73,7 +73,7 @@ Open `watch.py` on GitHub, click the pencil icon, and copy one of the blocks in 
 
 - **Timing:** GitHub's scheduled runs are sometimes 5 to 15 minutes late when their servers are busy, and the very first scheduled run can take up to an hour to start.
 - **If the site blocks GitHub:** if every check fails for an hour, you get one "can't reach qcinema.ph" alert, and another alert when it's working again.
-- **Private repo instead of public:** free private repos get 2,000 Actions minutes a month, and checking every 10 minutes uses about 4,300. In `.github/workflows/watch.yml`, change `*/10` to `*/30` (every 30 minutes) to stay under the limit.
+- **Private repo instead of public:** free private repos get 2,000 Actions minutes a month, and checking every 5 minutes uses about 8,600. In `.github/workflows/watch.yml`, change `*/5` to `*/30` (every 30 minutes) to stay under the limit.
 - **Auto-pause:** GitHub pauses scheduled workflows in public repos after 60 days with no activity. Re-enable it from the Actions tab if needed.
 - **Stopping it:** open the **Actions** tab, click **QCinema watcher**, then **...**, then **Disable workflow**.
 - `state.json` is the watcher's memory, and the watcher updates it automatically. Delete it to start fresh.
