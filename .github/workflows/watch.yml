@@ -1,0 +1,53 @@
+name: QCinema watcher
+
+on:
+  schedule:
+    # Every 10 minutes (GitHub sometimes runs these a few minutes late).
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      test_alert:
+        description: "Only send a test alert (to check Discord / email)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # to save state.json back to the repo
+  issues: write     # to open an issue (GitHub emails it to you)
+
+concurrency:
+  group: qcinema-watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check qcinema.ph for changes
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_MENTION: ${{ vars.DISCORD_MENTION }}
+          ISSUE_ALERTS: ${{ vars.ISSUE_ALERTS }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_ALERT: ${{ inputs.test_alert }}
+        run: python3 watch.py
+
+      - name: Save what was seen
+        run: |
+          if [ -n "$(git status --porcelain -- state.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.json
+            git commit -m "Update watcher state"
+            git push
+          else
+            echo "Nothing changed."
+          fi
