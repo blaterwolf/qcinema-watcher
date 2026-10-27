@@ -19,11 +19,11 @@
  ],
  "pages": {
   "festival-badge": {
-   "hash": "9bc8419664c0a457",
+   "hash": "9c905b1724360e3b",
    "lines": [
     "QCinephile Festival Badge",
     "Unlock Exclusive Access with QCinephile Festival Badge!",
-    "REGISTRATION OPENS SOON!",
+    "BADGE REGISTRATION",
     "*Registration opens at 12 noon on October 29, 2026, and ends on October 30, 2026, or while supplies last.",
     "WHAT YOU’LL GET",
     "Personalized QCinephile Badge",
@@ -134,7 +134,7 @@
     "Contact us at tickets@qcinema.ph."
    ],
    "missing": false,
-   "modified": "2026-10-27T14:07:15",
+   "modified": "2026-10-27T14:15:02",
    "source": "api"
   },
   "schedule": {
